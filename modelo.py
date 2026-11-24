@@ -1,12 +1,11 @@
 import sqlite3
 from datetime import datetime
 
-DB_NAME = "herramientas_informatica.db"
+DB_NAME = "catalogo.db"
 
 def init_db():
 	global DB_NAME
 
-	"""Inicializa la base de datos y crea la tabla si no existe"""
 	conn = sqlite3.connect(DB_NAME)
 	cursor = conn.cursor()
 
@@ -141,86 +140,3 @@ def eliminar(self, l_id):
 	except sqlite3.Error as e:
 		print(f"Error al eliminar herramienta: {e}")
 		return False
-
-
-
-def mostrar_herramientas(self, herramientas=None):
-	if herramientas is None:
-		herramientas = self.leer_herramientas()
-	
-	if not herramientas:
-		print("No hay herramientas en la base de datos")
-		return
-	
-	print("\n" + "="*100)
-	print(f"{'ID':<3} {'Nombre':<20} {'Categoría':<15} {'Marca':<12} {'Modelo':<15} {'Precio':<8} {'Cant':<4} {'Estado':<12}")
-	print("-"*100)
-
-	for herramienta in herramientas:
-		print(f"{herramienta[0]:<3} {herramienta[1]:<20} {herramienta[2]:<15} {herramienta[3] or 'N/A':<12} "
-			f"{herramienta[4] or 'N/A':<15} ${herramienta[5] or 0:<7} {herramienta[6]:<4} {herramienta[8]:<12}")
-
-def buscar_herramientas(self, criterio, valor):
-	global DB_NAME
-	
-	criterios_validos = ['nombre', 'categoria', 'marca', 'modelo', 'estado']
-
-	if criterio not in criterios_validos:
-		print(f"Criterio no válido. Use uno de: {', '.join(criterios_validos)}")
-		return []
-	
-	herramientas = self.leer_herramientas(criterio, valor)
-
-	if herramientas:
-		print(f"\nResultados de búsqueda para {criterio}='{valor}':")
-		self.mostrar_herramientas(herramientas)
-	else:
-		print(f"No se encontraron herramientas con {criterio}='{valor}'")
-	
-	return herramientas
-
-def generar_reporte_inventario(self):
-	global DB_NAME
-	
-	try:
-		conn = sqlite3.connect(DB_NAME)
-		cursor = conn.cursor()
-	
-		# Total de herramientas
-		cursor.execute('SELECT COUNT(*), SUM(cantidad) FROM herramientas')
-		total_herramientas, total_unidades = cursor.fetchone()
-	
-		# Herramientas por categoría
-		cursor.execute('''
-			SELECT categoria, COUNT(*), SUM(cantidad)
-			FROM herramientas
-			GROUP BY categoria
-		''')
-		por_categoria = cursor.fetchall()
-	
-		# Herramientas por estado
-		cursor.execute('''
-			SELECT estado, COUNT(*), SUM(cantidad)
-			FROM herramientas
-			GROUP BY estado
-		''')
-		por_estado = cursor.fetchall()
-	
-		conn.close()
-	
-		print("\n" + "="*50)
-		print("REPORTE DE INVENTARIO")
-		print("="*50)
-		print(f"Total de tipos de herramientas: {total_herramientas}")
-		print(f"Total de unidades: {total_unidades or 0}")
-	
-		print("\nPor categoría:")
-		for categoria, count, unidades in por_categoria:
-			print(f"  {categoria}: {count} tipos, {unidades} unidades")
-		
-		print("\nPor estado:")
-		for estado, count, unidades in por_estado:
-			print(f"  {estado}: {count} tipos, {unidades} unidades")
-		
-	except sqlite3.Error as e:
-		print(f"Error al generar reporte: {e}")
