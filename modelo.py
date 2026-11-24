@@ -3,7 +3,7 @@ from datetime import datetime
 
 DB_NAME = "herramientas_informatica.db"
 
-def init_db(self):
+def init_db():
 	global DB_NAME
 
 	"""Inicializa la base de datos y crea la tabla si no existe"""
@@ -11,7 +11,7 @@ def init_db(self):
 	cursor = conn.cursor()
 
 	cursor.execute(f'''
-		CREATE TABLE IF NOT EXISTS herramientas (
+		CREATE TABLE IF NOT EXISTS catalogo (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			titulo TEXT NOT NULL,
 			tipo TEXT CHECK(tipo IN ('Película', 'Serie')),
@@ -29,7 +29,8 @@ def init_db(self):
 	print("Base de datos inicializada correctamente")
 
 
-def crear_herramienta(self, nombre, categoria, marca=None, modelo=None, precio=None, cantidad=1, descripcion=None, estado='Disponible'):
+
+def crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado = ''):
 	global DB_NAME
 	
 	try:
@@ -37,22 +38,22 @@ def crear_herramienta(self, nombre, categoria, marca=None, modelo=None, precio=N
 		cursor = conn.cursor()
 	
 		cursor.execute('''
-			INSERT INTO herramientas
-			(nombre, categoria, marca, modelo, precio, cantidad, descripcion, fecha_adquisicion, estado)
+			INSERT INTO catalogo
+			(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-		''', (nombre, categoria, marca, modelo, precio, cantidad, descripcion, datetime.now().date(), estado))
+		''', (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado))
 	
 		conn.commit()
-		herramienta_id = cursor.lastrowid
 		conn.close()
 	
-		print(f"Herramienta '{nombre}' creada con ID: {herramienta_id}")
-		return herramienta_id
+		print(f"Película '{titulo}' añadida.")
 	
 	except sqlite3.Error as e:
 		print(f"Error al crear herramienta: {e}")
-		return None
-		
+
+
+
+
 def leer_herramientas(self, filtro=None, valor=None):
 	global DB_NAME
 	
