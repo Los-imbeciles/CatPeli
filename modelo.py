@@ -17,8 +17,8 @@ def init_db():
 			descripcion TEXT NOT NULL,
 			genero TEXT NOT NULL,
 			director TEXT NOT NULL,
-			ano_estreno INT CHECK(ano_estreno >= 1900 ano_estreno <= {datetime.now().year}),
-			calificacion INT CHECK(ano_estreno >= 0 ano_estreno <= 10),
+			ano_estreno INT CHECK(ano_estreno >= 1900 AND ano_estreno <= {datetime.now().year}),
+			calificacion INT CHECK(calificacion >= 0 AND calificacion <= 10),
 			estado TEXT CHECK(estado IN ('sin ver', 'ver mas tarde', 'viendo', 'visto', 'para re-ver'))
 		)
 	''')
@@ -73,7 +73,7 @@ def leer(filtro=None, valor=None):
 		return leer
 	
 	except sqlite3.Error as e:
-		print(f"Error al leer herramientas: {e}")
+		print(f"Error al leer catalogo: {e}")
 		return []
 
 
@@ -95,7 +95,7 @@ def actualizar(l_id, **kwargs):
 		valores.append(l_id)
 	
 		cursor.execute(f'''
-			UPDATE herramientas
+			UPDATE catalogo
 			SET {set_clause}
 			WHERE id = ?
 		''', valores)
@@ -124,7 +124,7 @@ def eliminar(self, l_id):
 		conn = sqlite3.connect(DB_NAME)
 		cursor = conn.cursor()
 	
-		cursor.execute('DELETE FROM herramientas WHERE id = ?', (l_id,))
+		cursor.execute('DELETE FROM catalogo WHERE id = ?', (l_id,))
 	
 		conn.commit()
 		filas_afectadas = cursor.rowcount
