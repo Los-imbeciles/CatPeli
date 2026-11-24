@@ -54,7 +54,7 @@ def crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion
 
 
 
-def leer_herramientas(self, filtro=None, valor=None):
+def leer(filtro=None, valor=None):
 	global DB_NAME
 	
 	try:
@@ -63,21 +63,23 @@ def leer_herramientas(self, filtro=None, valor=None):
 	
 		if filtro and valor:
 			cursor.execute(f'''
-				SELECT * FROM herramientas WHERE {filtro} LIKE ?
+				SELECT * FROM catalogo WHERE {filtro} LIKE ?
 			''', (f'%{valor}%',))
 		else:
-			cursor.execute('SELECT * FROM herramientas')
+			cursor.execute('SELECT * FROM catalogo')
 	
-		herramientas = cursor.fetchall()
+		leer = cursor.fetchall()
 		conn.close()
 	
-		return herramientas
+		return leer
 	
 	except sqlite3.Error as e:
 		print(f"Error al leer herramientas: {e}")
 		return []
-		
-def actualizar_herramienta(self, herramienta_id, **kwargs):
+
+
+
+def actualizar(l_id, **kwargs):
 	global DB_NAME
 	
 	try:
@@ -91,7 +93,7 @@ def actualizar_herramienta(self, herramienta_id, **kwargs):
 		# Construir la consulta dinámicamente
 		set_clause = ', '.join([f"{key} = ?" for key in kwargs.keys()])
 		valores = list(kwargs.values())
-		valores.append(herramienta_id)
+		valores.append(l_id)
 	
 		cursor.execute(f'''
 			UPDATE herramientas
@@ -104,39 +106,43 @@ def actualizar_herramienta(self, herramienta_id, **kwargs):
 		conn.close()
 	
 		if filas_afectadas > 0:
-			print(f"Herramienta ID {herramienta_id} actualizada correctamente")
+			print("Obra actualizada correctamente.")
 			return True
 		else:
-			print(f"No se encontró la herramienta con ID {herramienta_id}")
+			print("No se encontró ninguna obra")
 			return False
 		
 	except sqlite3.Error as e:
 		print(f"Error al actualizar herramienta: {e}")
 		return False
 
-def eliminar_herramienta(self, herramienta_id):
+
+
+def eliminar(self, l_id):
 	global DB_NAME
 
 	try:
 		conn = sqlite3.connect(DB_NAME)
 		cursor = conn.cursor()
 	
-		cursor.execute('DELETE FROM herramientas WHERE id = ?', (herramienta_id,))
+		cursor.execute('DELETE FROM herramientas WHERE id = ?', (l_id,))
 	
 		conn.commit()
 		filas_afectadas = cursor.rowcount
 		conn.close()
 	
 		if filas_afectadas > 0:
-			print(f"Herramienta ID {herramienta_id} eliminada correctamente")
+			print("Obra eliminada correctamente.")
 			return True
 		else:
-			print(f"No se encontró la herramienta con ID {herramienta_id}")
+			print("No se encontró la obra")
 			return False
 		
 	except sqlite3.Error as e:
 		print(f"Error al eliminar herramienta: {e}")
 		return False
+
+
 
 def mostrar_herramientas(self, herramientas=None):
 	if herramientas is None:
