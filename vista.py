@@ -136,7 +136,7 @@ def ventana_principal():
 	
 	
 	elg_estado = StringVar(root)
-	sel_estado = tkx.SelectBox(topbar, ["Todos", "Sin ver", "Ver más tarde", "Visto"], elg_estado)  # creeria que en este caso tendría sentido que ver más tarde y rever sean considerado lo mismo
+	sel_estado = tkx.SelectBox(topbar, ["Todos", "Sin ver", "Ver más tarde", "Viendo", "Visto", "Para re-ver"], elg_estado)
 	sel_estado.bind("<<OptionMenuChanged>>", lambda _ : actualizar_y_listar_peliculas())
 	sel_estado.grid(column=1,row=0)
 	
@@ -205,7 +205,7 @@ def actualizar_y_listar_peliculas():
 	global LISTA, paginas_disp, viendo_pagina
 	viendo_pagina = 0
 	print(elg_tipo.get())
-	LISTA = controlador.mostrar(elg_tipo.get())
+	LISTA = controlador.mostrar(elg_tipo.get(), elg_estado.get())
 	paginas_disp = math.ceil(len(LISTA)/total_pelis)-1
 	listar_peliculas()
 

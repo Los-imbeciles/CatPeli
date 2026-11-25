@@ -11,7 +11,19 @@ def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
 	if (tipo != None and tipo != "Películas y series"):
 		filtro.append('tipo')
 		valor.append(tipos[tipo])
-		
+
+	
+	estados = {
+		"Todos": "",
+		"Sin ver": "sin ver",
+		"Ver más tarde": "ver mas tarde",
+		"Viendo": "viendo",
+		"Visto": "visto",
+		"Para re-ver": "para re-ver"
+	}
+	if (estado != None and estado != "Todos"):
+		filtro.append('estado')
+		valor.append(estados[estado])
 
 	obras = modelo.leer(filtro=filtro,valor=valor)
 	

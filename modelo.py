@@ -77,8 +77,8 @@ def init_db():
 			'Cuando una camada de cachorros dálmatas es secuestrada por los secuaces de Cruella de Vil, los padres deben encontrarlos antes de que los utilice para una diabólica colección de moda.',
 			'Aventura - Comedia - Familia',
 			'Clyde Geronimi - Hamilton Luske - Wolfgang Reitherman',
-			'1961',
-			'7',
+			1961,
+			7,
 			'visto',
 			'imgs/101 dálmatas.png'
 		)
@@ -92,7 +92,7 @@ def init_db():
 			'La historia romántica de un perro cocker spaniel de una familia de clase alta y un perro callejero.',
 			'Musica - Familia - Comedia - Aventura',
 			'Clyde Geronimi - Hamilton Luske - Wilfred Jackson',
-			'1955',
+			1955,
 			'7',
 			'sin ver',
 			'imgs/la dama y el vagabundo.png'
@@ -107,7 +107,7 @@ def init_db():
 			'Guerreros wakandeses que, a lo largo de la historia, han recorrido el mundo para recuperar peligrosos artefactos de vibranium.',
 			'Ciencia ficción - Aventura',
 			'John Fang - Todd Harris',
-			'2025',
+			2025,
 			'6',
 			'sin ver',
 			'imgs/eyes of wakanda.png'
@@ -122,10 +122,10 @@ def init_db():
 			'El famoso detective Sherlock Holmes y su compañero el Dr. Watson resuelven crímenes en el Londres del siglo XXI.',
 			'Misterio',
 			'Paul McGuigan',
-			'2010 - 2017',
+			2010,
 			'9',
 			'para re-ver',
-			'imgs/eyes of wakanda.png'
+			'imgs/sherlock.png'
 		)
 	''')
 	conn.commit()
@@ -170,7 +170,6 @@ def leer(filtro = [], valor= []):
 			else: sql += " AND "
 			sql += f"{filtro[i]} LIKE '%{valor[i]}%'"
 		cursor.execute(sql)
-	
 		leer = cursor.fetchall()
 		conn.close()
 	
