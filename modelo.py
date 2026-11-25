@@ -9,6 +9,7 @@ def init_db():
 	conn = sqlite3.connect(DB_NAME)
 	cursor = conn.cursor()
 
+	cursor.execute("DROP TABLE catalogo")
 	cursor.execute(f'''
 		CREATE TABLE IF NOT EXISTS catalogo (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,7 +20,8 @@ def init_db():
 			director TEXT NOT NULL,
 			ano_estreno INT CHECK(ano_estreno >= 1900 AND ano_estreno <= {datetime.now().year}),
 			calificacion INT CHECK(calificacion >= 0 AND calificacion <= 10),
-			estado TEXT CHECK(estado IN ('sin ver', 'ver mas tarde', 'viendo', 'visto', 'para re-ver'))
+			estado TEXT CHECK(estado IN ('sin ver', 'ver mas tarde', 'viendo', 'visto', 'para re-ver')),
+			imagen
 		)
 	''')
 
