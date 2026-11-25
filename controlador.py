@@ -25,6 +25,18 @@ def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
 		filtro.append('estado')
 		valor.append(estados[estado])
 
+	columnas = {
+		"Título": "titulo",
+		"Descripcion": "descripcion",
+		"Genero": "genero",
+		"Director": "director",
+		"Año": "ano_estreno",
+		"Calificación": "calificacion"
+	}
+	if (busqueda != None and busqueda != "" and busq_tipo != None and busq_tipo != ""):
+		filtro.append(columnas[busq_tipo])
+		valor.append(busqueda)
+
 	obras = modelo.leer(filtro=filtro,valor=valor)
 	
 	if not obras:

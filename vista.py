@@ -70,6 +70,7 @@ peli_lab = []
 peli_img = []
 peli_img_inst = [] #instancias de las imagenes bug d tkinter
 lab_pag = ""
+fil_buscar=""
 
 LISTA = []
 def agregar_pelicula ():
@@ -78,8 +79,10 @@ def agregar_pelicula ():
 def ventana_menu_peli ():
 	ventana2 = Toplevel()
 	ventana2.title("Añadir película o serie:")
-	#btn_agregar = Button(ventana2, text="Agregar al catálogo", command = agregar)
 
+	btn_agregar = Button(ventana2, text="Agregar al catálogo", command = agregar_pelicula)
+	btn_agregar.pack()
+	
 	nomb_peli = Label(ventana2, text = "")
 	nomb_peli.pack()
 	nombre_pelicula = Entry(ventana2, width=30)
@@ -94,7 +97,7 @@ def ventana_menu_peli ():
 
 
 def ventana_principal():
-	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, pelis, peli_lab, peli_img, peli_img_inst, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli, lab_pag
+	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, pelis, peli_lab, peli_img, peli_img_inst, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli, lab_pag, fil_buscar
 	
 	root = Tk()
 	root.title("Registro de películas y series")
@@ -106,7 +109,7 @@ def ventana_principal():
 	busq_cont = Frame(topbar, padx=40)
 	busq_cont.grid(column=2,row=0)
 	
-	btn_buscar = Button(busq_cont, text="Buscar", font=font)
+	btn_buscar = Button(busq_cont, text="Buscar", font=font, command=actualizar_y_listar_peliculas)
 	btn_buscar.grid(column=0, row=0)
 	
 	fil_buscar = Entry(busq_cont, font=font, width=20)
@@ -204,8 +207,7 @@ def listar_peliculas():
 def actualizar_y_listar_peliculas():
 	global LISTA, paginas_disp, viendo_pagina
 	viendo_pagina = 0
-	print(elg_tipo.get())
-	LISTA = controlador.mostrar(elg_tipo.get(), elg_estado.get())
+	LISTA = controlador.mostrar(elg_tipo.get(), elg_estado.get(), fil_buscar.get(), tipo_de_busqueda.get())
 	paginas_disp = math.ceil(len(LISTA)/total_pelis)-1
 	listar_peliculas()
 
