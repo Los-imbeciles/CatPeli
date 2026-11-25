@@ -62,12 +62,14 @@ ancho_libreria = 1400
 cols_peli = 6
 rows_peli = 2
 total_pelis = cols_peli * rows_peli
+paginas_disp = 0
 ancho_peli = math.floor(ancho_libreria / cols_peli)
 alto_peli = math.floor(alto_libreria / rows_peli)
 pelis = []
 peli_lab = []
 peli_img = []
 peli_img_inst = [] #instancias de las imagenes bug d tkinter
+lab_pag = ""
 
 LISTA = []
 def agregar_pelicula ():
@@ -92,7 +94,7 @@ def ventana_menu_peli ():
 
 
 def ventana_principal():
-	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, pelis, peli_lab, peli_img, peli_img_inst, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli
+	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, pelis, peli_lab, peli_img, peli_img_inst, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli, lab_pag
 	
 	root = Tk()
 	root.title("Registro de películas y series")
@@ -124,10 +126,10 @@ def ventana_principal():
 	pag_cont = Frame(topbar, padx=40)
 	pag_cont.grid(column=4, row=0)
 	
-	btn_sig = Button(pag_cont, text="<", font=font)
-	btn_sig.grid(column=0,row=0)
-	btn_ant = Button(pag_cont, text=">", font=font)
-	btn_ant.grid(column=2,row=0)
+	btn_ant = Button(pag_cont, text="<", font=font, command=prev_pag)
+	btn_ant.grid(column=0,row=0)
+	btn_sig = Button(pag_cont, text=">", font=font, command=sig_pag)
+	btn_sig.grid(column=2,row=0)
 	lab_pag = Label(pag_cont, text="1/4", font=font)
 	lab_pag.grid(column=1,row=0)
 	
@@ -181,6 +183,8 @@ def ventana_principal():
 
 def listar_peliculas():
 	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, pelis, peli_lab, peli_img, peli_img_inst, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli, LISTA
+
+	lab_pag.config(text=" "+str(viendo_pagina+1)+"/"+str(paginas_disp+1)+" ")
 	
 	for i in range(total_pelis):
 		# ignoren los errores, creo que igual deberia funcionar
@@ -200,6 +204,20 @@ def listar_peliculas():
 
 
 def actualizar_y_listar_peliculas():
-	global LISTA
+	global LISTA, paginas_disp, viendo_pagina
+	viendo_pagina = 0
 	LISTA = controlador.mostrar()
+	paginas_disp = math.ceil(len(LISTA)/total_pelis)-1
+	listar_peliculas()
+
+def sig_pag():
+	global viendo_pagina
+	viendo_pagina += 1
+	viendo_pagina=min(viendo_pagina,paginas_disp)
+	listar_peliculas()
+
+def prev_pag():
+	global viendo_pagina
+	viendo_pagina -= 1
+	viendo_pagina=max(viendo_pagina,0)
 	listar_peliculas()
