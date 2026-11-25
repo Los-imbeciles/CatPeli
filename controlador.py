@@ -62,12 +62,12 @@ def anadir(titulo, tipo, descripcion, genero, director, ano_estreno, calificacio
 	if (not (tipo=="Película" or tipo=="Serie")):
 		return "ERROR: Esta obra debe ser una película o una serie."
 
-	if (ano_estreno<1900):
+	if (int(ano_estreno)<1900):
 		return "ERROR: Esta obra es demasiado vieja para existir."
-	if (ano_estreno>2026):
+	if (int(ano_estreno)>2026):
 		return "ERROR: Esta obra todavia no ha salido."
 	
-	if (calificacion < 0 or calificacion > 10):
+	if (int(calificacion) < 0 or int(calificacion) > 10):
 		return "ERROR: La calificación no es válida."
 
 	if (not (estado=="sin ver" or estado=="ver mas tarde" or estado=="viendo" or estado=="visto" or estado=="para re-ver")):
@@ -102,3 +102,13 @@ def eliminar(id):
 				return f"ERROR: {e}"
 
 	return "ERROR: No se encontró la obra."
+
+
+
+def ver(id):
+	try:
+		obras = modelo.ver1(id)
+		return obras
+	except sqlite3.Error as e:
+		print(f"Error al leer la película o serie: {e}")
+		return []

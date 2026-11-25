@@ -309,7 +309,18 @@ def leer(filtro = [], valor= []):
 
 	return leer
 
+def ver1 (id):
+	global DB_NAME
 
+	conn = sqlite3.connect(DB_NAME)
+	cursor = conn.cursor()
+	
+	sql = "SELECT * FROM catalogo WHERE id = ? LIMIT 1"
+	
+	cursor.execute(sql,(id))
+	ver = cursor.fetchone()
+	conn.close()
+	return ver
 
 def actualizar(l_id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen):
 	global DB_NAME

@@ -1,8 +1,10 @@
 from tkinter import *
 import tkinter.font as tkFont
+from tkinter import scrolledtext as st
 import TKinterExtra as tkx
 import math
 import controlador
+from tkinter import filedialog
 
 viendo_pagina = 0
 tipo_de_busqueda = ""
@@ -26,14 +28,50 @@ peli_img = []
 peli_img_inst = [] #instancias de las imagenes bug d tkinter
 lab_pag = ""
 fil_buscar=""
-
+ruta_imagen_seleccionada = ""
 LISTA = []
-	
-def ventana_subir_obra ():
-	global font, nombre,tipo,
-	ventana2 = Toplevel()
-	ventana2.title("Añadir película o serie:")
 
+######################
+#### VISTA ANADIR ####
+######################
+id_revisando = -99
+
+def abrir_explorador_imagen():
+	global ruta_imagen_seleccionada
+	ruta = filedialog.askopenfilename(
+		title= "Seleccionar imagen de portada",
+		filetypes= [("Imágenes", "*.png*")]
+	)
+	if ruta:
+		ruta_imagen_seleccionada = ruta
+		print (f"Imagen sleeccionada: {ruta}")
+	
+def cerrar_ventana():
+	global id_revisando
+	id_revisando = -99
+
+def ventana_nueva(id = -1):
+	global id_revisando
+	ventana_subir_obra()
+	id_revisando = id
+	if (id > -1):
+		id_revisando = id + (total_pelis * viendo_pagina)
+		cargar_datos()
+
+
+def ventana_subir_obra ():
+	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
+
+	if(id_revisando >= 0): return
+	
+	ventana2 = Toplevel()
+	ventana2.title("Añadir película o serie")
+	ventana2.geometry("+500+100")
+	ventana2.bind('<Destroy>', lambda _ : cerrar_ventana())
+
+	ventana2.transient(root)
+	ventana2.grab_set()
+	
 	split_v = Frame(ventana2)
 	split_v.pack()
 
@@ -47,22 +85,22 @@ def ventana_subir_obra ():
 	btn_agregar = Button(topbar, text="Agregar", command = agregar_obra, bg="blue", fg="white", font=font)
 	btn_agregar.grid(column=2, row=0)
 	
-	btn_agregar = Button(topbar, text="Eliminar", command = agregar_obra, bg="red", fg="white", font=font)
-	btn_agregar.grid(column=1, row=0)
+	btn_eliminar = Button(topbar, text="Eliminar", command = agregar_obra, bg="red", fg="white", font=font)
+	btn_eliminar.grid(column=1, row=0)
 
 
 	#### DATOS ####
 	split_h = Frame(split_v)
 	split_h.pack()
 
-	btn_img  = Button(split_h, width=30, height=20)
+	btn_img  = Button(split_h, width=30, height=20, text="Click para cargar imagen", command=abrir_explorador_imagen)
 	btn_img.grid(column=1, row=0)
 
 	frm_info = Frame(split_h, width=30, padx=10)
 	frm_info.grid(column=0, row=0)
 
 	#TITULO
-	frm_titulo = Frame(frm_info, pady=10)
+	frm_titulo = Frame(frm_info, pady=10, width=20)
 	frm_titulo.pack()
 	titulo_obra = Label(frm_titulo, text = "Título:", font=font)
 	titulo_obra.pack()
@@ -84,8 +122,8 @@ def ventana_subir_obra ():
 	genero_obra.pack()
 	genero = Entry(frm_genero, font = font)
 	genero.pack()
-
-
+	
+	
 	#### QUAD ####
 	quad = Frame(frm_info)
 	quad.pack()
@@ -107,7 +145,7 @@ def ventana_subir_obra ():
 	ano_estreno.pack()
 	ano = Entry(frm_ano, font = font)
 	ano.pack()
-
+	
 	#ESTADO
 	frm_estado = Frame(quad, pady=10)
 	frm_estado.grid(row=1, column=0)
@@ -131,15 +169,26 @@ def ventana_subir_obra ():
 	frm_descripcion.pack()
 	descripcion_obra = Label(frm_descripcion, text = "Descripción:", font = font)
 	descripcion_obra.pack()
-	descrip = Entry(frm_descripcion, width=60, font=font)
+	descrip = st.ScrolledText(frm_descripcion, width=60, font=font, height=10)
 	descrip.pack()
 
+
+
+def cargar_datos():
+	global id_revisando, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
+
+	nombre_obra.insert(0, "Hello Geeks")
+	#director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
+
+
+
 def agregar_obra ():
-	titulo = nombre_obra.get()
-	tipo = tipo_elegido.get()
-	
-	
-	controlador.anadir()
+    global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, ruta_imagen_seleccionada
+    
+  
+    img_final = ruta_imagen_seleccionada if ruta_imagen_seleccionada != "" else "oveja.png"
+
+    controlador.anadir(nombre_obra.get(), tipo_elegido.get(), descrip.get('1.0', END), genero.get(), director.get(), ano.get(), calificacion.get(), estado_elegido.get(), img_final, id_revisando)
 
 
 
@@ -168,7 +217,7 @@ def ventana_principal():
 	
 	
 	
-	btn_anadir = Button(topbar, text="+ Añadir al catálogo", bg="blue", fg="white", font=font, command = ventana_subir_obra)
+	btn_anadir = Button(topbar, text="+ Añadir al catálogo", bg="blue", fg="white", font=font, command=ventana_nueva)
 	btn_anadir.grid(column=3,row=0)
 	
 	
@@ -183,7 +232,7 @@ def ventana_principal():
 	lab_pag = Label(pag_cont, text="1/4", font=font)
 	lab_pag.grid(column=1,row=0)
 	
-	
+
 	
 	elg_estado = StringVar(root)
 	sel_estado = tkx.SelectBox(topbar, ["Todos", "Sin ver", "Ver más tarde", "Viendo", "Visto", "Para re-ver"], elg_estado)
@@ -244,11 +293,36 @@ def listar_peliculas():
 			peli_img[i].config(image=peli_img_inst[i])
 			peli_lab[i].config(text=item[1])
 			peli_img[i].grid(row=0)
+			match i: # ESTO ES UN CRIMEN, LO SABEMOS PERO NO SE NOS OCURRE NADA MEJOR
+				case 0: peli_img[i].config(command=peli0)
+				case 1: peli_img[i].config(command=peli1)
+				case 2: peli_img[i].config(command=peli2)
+				case 3: peli_img[i].config(command=peli3)
+				case 4: peli_img[i].config(command=peli4)
+				case 5: peli_img[i].config(command=peli5)
+				case 6: peli_img[i].config(command=peli6)
+				case 7: peli_img[i].config(command=peli7)
+				case 8: peli_img[i].config(command=peli8)
+				case 9: peli_img[i].config(command=peli9)
+				case 10: peli_img[i].config(command=peli10)
+				case 11: peli_img[i].config(command=peli11)
 		else:
 			peli_img_inst[i]=""
 			peli_lab[i].config(text="")
 			peli_img[i].grid_forget()
 
+def peli0(): ventana_nueva(0)
+def peli1(): ventana_nueva(1)
+def peli2(): ventana_nueva(2)
+def peli3(): ventana_nueva(3)
+def peli4(): ventana_nueva(4)
+def peli5(): ventana_nueva(5)
+def peli6(): ventana_nueva(6)
+def peli7(): ventana_nueva(7)
+def peli8(): ventana_nueva(8)
+def peli9(): ventana_nueva(9)
+def peli10(): ventana_nueva(10)
+def peli11(): ventana_nueva(11)
 
 
 def actualizar_y_listar_peliculas():
