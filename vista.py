@@ -113,7 +113,7 @@ def ventana_principal():
 	fil_buscar.grid(column=1,row=0)
 
 	tipo_de_busqueda = StringVar(root)
-	sel_tipo_buscar = tkx.SelectBox(busq_cont, ["Título", "Tipo", "Descripcion", "Genero", "Director", "Año", "Calificación"], tipo_de_busqueda)
+	sel_tipo_buscar = tkx.SelectBox(busq_cont, ["Título", "Descripcion", "Genero", "Director", "Año", "Calificación"], tipo_de_busqueda)
 	sel_tipo_buscar.grid(column=2,row=0)
 	
 	
@@ -137,17 +137,15 @@ def ventana_principal():
 	
 	elg_estado = StringVar(root)
 	sel_estado = tkx.SelectBox(topbar, ["Todos", "Sin ver", "Ver más tarde", "Visto"], elg_estado)  # creeria que en este caso tendría sentido que ver más tarde y rever sean considerado lo mismo
+	sel_estado.bind("<<OptionMenuChanged>>", lambda _ : actualizar_y_listar_peliculas())
 	sel_estado.grid(column=1,row=0)
-	sel_estado.bind("<<ComboboxSelected>>", lambda _ : actualizar_y_listar_peliculas())
 	
 	pad = Frame(topbar, padx=40)
 	pad.grid(column=0, row=0)
 	elg_tipo = StringVar(root)
 	sel_tipo = tkx.SelectBox(pad, ["Películas y series", "Solo películas", "Solo series"], elg_tipo)
+	sel_tipo.bind("<<OptionMenuChanged>>", lambda _ : actualizar_y_listar_peliculas())
 	sel_tipo.pack()
-	sel_tipo.bind("<<ComboboxSelected>>", lambda _ : actualizar_y_listar_peliculas())
-	
-	
 	
 	
 	
@@ -192,7 +190,7 @@ def listar_peliculas():
 		
 		if leyendo < len(LISTA):
 			item = LISTA[leyendo]
-			peli_img_inst[i]=PhotoImage(file=item[9]).subsample(2, 2)
+			peli_img_inst[i]=PhotoImage(file=item[9])
 			peli_img[i].config(image=peli_img_inst[i])
 			peli_lab[i].config(text=item[1])
 			peli_img[i].grid(row=0)
@@ -206,7 +204,8 @@ def listar_peliculas():
 def actualizar_y_listar_peliculas():
 	global LISTA, paginas_disp, viendo_pagina
 	viendo_pagina = 0
-	LISTA = controlador.mostrar()
+	print(elg_tipo.get())
+	LISTA = controlador.mostrar(elg_tipo.get())
 	paginas_disp = math.ceil(len(LISTA)/total_pelis)-1
 	listar_peliculas()
 

@@ -1,7 +1,19 @@
 import modelo
 
-def mostrar():
-	obras = modelo.leer()
+def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
+	filtro = []
+	valor = []
+	tipos = {
+		"Películas y series": "",
+		"Solo películas": "Película",
+		"Solo series": "Serie"
+	}
+	if (tipo != None and tipo != "Películas y series"):
+		filtro.append('tipo')
+		valor.append(tipos[tipo])
+		
+
+	obras = modelo.leer(filtro=filtro,valor=valor)
 	
 	if not obras:
 		print("No hay herramientas en la base de datos")

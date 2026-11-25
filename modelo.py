@@ -39,6 +39,95 @@ def init_db():
 		)
 	''')
 
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			2,
+			"Avergers:Doomsday",
+			'Película',
+			'Héroes icónicos de tres universos diferentes se encuentran en un curso de colisión mortal y enfrentan una amenaza existencial como nunca antes han visto.',
+			'Ciencia ficción - Acción',
+			'Anthony Russo - Joe Russo',
+			'2026',
+			8,
+			'sin ver',
+			'imgs/doomsday.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			3,
+			"Titanes del pacifico",
+			'Película',
+			'Mientras la guerra entre la humanidad y las criaturas marinas monstruosas avanza, un antiguo piloto y un aprendiz se unen para conducir un arma aparentemente obsoleta en un esfuerzo desesperado por salvar al mundo del apocalipsis.',
+			'Ciencia ficción - Acción - Aventura',
+			'Guillermo del Toro',
+			'2013',
+			'7',
+			'visto',
+			'imgs/titanes del pacifico.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			4,
+			"101 dálmatas",
+			'Película',
+			'Cuando una camada de cachorros dálmatas es secuestrada por los secuaces de Cruella de Vil, los padres deben encontrarlos antes de que los utilice para una diabólica colección de moda.',
+			'Aventura - Comedia - Familia',
+			'Clyde Geronimi - Hamilton Luske - Wolfgang Reitherman',
+			'1961',
+			'7',
+			'visto',
+			'imgs/101 dálmatas.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			5,
+			"La dama y el vagabundo",
+			'Película',
+			'La historia romántica de un perro cocker spaniel de una familia de clase alta y un perro callejero.',
+			'Musica - Familia - Comedia - Aventura',
+			'Clyde Geronimi - Hamilton Luske - Wilfred Jackson',
+			'1955',
+			'7',
+			'sin ver',
+			'imgs/la dama y el vagabundo.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			6,
+			"Los ojos de Wakanda",
+			'Serie',
+			'Guerreros wakandeses que, a lo largo de la historia, han recorrido el mundo para recuperar peligrosos artefactos de vibranium.',
+			'Ciencia ficción - Aventura',
+			'John Fang - Todd Harris',
+			'2025',
+			'6',
+			'sin ver',
+			'imgs/eyes of wakanda.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			7,
+			"Sherlock",
+			'Serie',
+			'El famoso detective Sherlock Holmes y su compañero el Dr. Watson resuelven crímenes en el Londres del siglo XXI.',
+			'Misterio',
+			'Paul McGuigan',
+			'2010 - 2017',
+			'9',
+			'para re-ver',
+			'imgs/eyes of wakanda.png'
+		)
+	''')
 	conn.commit()
 	conn.close()
 	print("Base de datos inicializada correctamente")
@@ -69,19 +158,18 @@ def crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion
 
 
 
-def leer(filtro=None, valor=None):
+def leer(filtro = [], valor= []):
 	global DB_NAME
 	
 	try:
 		conn = sqlite3.connect(DB_NAME)
 		cursor = conn.cursor()
-	
-		if filtro and valor:
-			cursor.execute(f'''
-				SELECT * FROM catalogo WHERE {filtro} LIKE ?
-			''', (f'%{valor}%',))
-		else:
-			cursor.execute('SELECT * FROM catalogo')
+		sql = "SELECT * FROM catalogo"
+		for i in range(len(filtro)):
+			if i == 0: sql += " WHERE "
+			else: sql += " AND "
+			sql += f"{filtro[i]} LIKE '%{valor[i]}%'"
+		cursor.execute(sql)
 	
 		leer = cursor.fetchall()
 		conn.close()
@@ -133,7 +221,7 @@ def actualizar(l_id, **kwargs):
 
 
 
-def eliminar(self, l_id):
+def eliminar(l_id):
 	global DB_NAME
 
 	try:
