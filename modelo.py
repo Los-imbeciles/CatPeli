@@ -26,15 +26,15 @@ def init_db():
 	''')
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
-			"Burns para una temporada",
+			"Cómo entrenar a tu dragón 2",
 			'Película',
-			'descripcion',
-			'Imitacion barata',
-			'Steven Spilbergo',
-			'1999',
-			'0',
+			'Cuando Hipo y Chimuelo descubren una cueva de hielo que alberga a cientos de nuevos dragones salvajes y al misterioso Jinete del Dragón, los dos amigos se encuentran en el centro de una batalla para proteger la paz.',
+			'Acción',
+			'Dean DeBlois',
+			'2014',
+			'7',
 			'visto',
-			'oveja.png'
+			'imgs/como entrenar a tu dragon 2.png'
 		)
 	''')
 
@@ -124,8 +124,8 @@ def init_db():
 
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
-			"Como entrenar a tu dragón",
-			'Pelicula',
+			"Cómo entrenar a tu dragón",
+			'Película',
 			'Un desventurado joven vikingo, que aspira a cazar dragones, se convierte en el improbable amigo de un joven dragón, y aprende que puede haber más en las criaturas de lo que suponía.',
 			'Acción',
 			'Dean DeBlois - Chris Sanders',
@@ -139,15 +139,135 @@ def init_db():
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			9,
-			"Como entrenar a tu dragón 2",
-			'Pelicula',
-			'Cuando Hipo y Chimuelo descubren una cueva de hielo que alberga a cientos de nuevos dragones salvajes y al misterioso Jinete del Dragón, los dos amigos se encuentran en el centro de una batalla para proteger la paz.',
-			'Acción',
+			"Cómo entrenar a tu dragón 3",
+			'Película',
+			'Cuando Hipo descubre que Chimuelo no es el único Furia Nocturna, deberá encontrar el Mundo Perdido antes de que el tirano Grimmel lo encuentre primero.',
+			'Acción - Comedia - Aventura - Drama',
 			'Dean DeBlois',
-			2014,
+			2019,
+			'7',
+			'sin ver',
+			'imgs/como entrenar a tu dragon 3.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			10,
+			"Vengadores:Endgame",
+			'Película',
+			'Después de que Thanos haya aniquilado a la mitad del universo, los Vengadores supervivientes deben hacer todo lo posible por deshacer tal atrocidad.',
+			'Ciencia ficción',
+			'Anthony Russo - Joe Russo',
+			2019,
+			'8',
+			'sin ver',
+			'imgs/endgame.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			11,
+			"Spider-Man: Cruzando el multiverso",
+			'Película',
+			'Miles Morales conoce a un nuevo equipo de Spider-People formado por héroes de diferentes dimensiones. Pero cuando los héroes se enfrentan sobre cómo hacer frente a una nueva amenaza, Miles se encuentra en una encrucijada.',
+			'Ciencia ficción - Familia',
+			'Joaquim Dos Santos - Kemp Powers - Justin K. Thompson',
+			2023,
+			'8',
+			'viendo',
+			'imgs/miles morales.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			12,
+			"Spider-Man: Lejos de casa",
+			'Película',
+			'Tras los acontecimientos de "Vengadores: Endgame", Spider-Man debe enfrentarse a nuevas amenazas en un mundo que ha cambiado para siempre.',
+			'Aventura - Acción',
+			'Jon Watts',
+			2019,
 			'7',
 			'visto',
-			'imgs/como entrenar a tu dragon.png'
+			'imgs/spiderman lejos de casa.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			13,
+			"The Quintessential Quintuplets",
+			'Película',
+			'El tutor adolescente Fuutaro Uesugi debe elegir finalmente entre las 5 hermanas Nakano, que tienen sentimientos por él, en el próximo festival cultural de la escuela; el evento que le llevará a casarse con una de ellas en un Flash-Forward.',
+			'Comedia - Drama',
+			'Masato Jinbô',
+			2022,
+			'7',
+			'sin ver',
+			'imgs/las quintillizas.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			14,
+			"Jujutsu Kaisen 0",
+			'Película',
+			'Rika, amiga de la infancia de Yuuta Okkotsu, murió en un accidente automovilístico. Su espíritu permanece con él, más ya no es la dulce niña que él conocía. Se manifiesta como una entidad monstruosa y poderosa que lo protege ferozmente.',
+			'Acción - Fantasía',
+			'Sunghoo Park',
+			2021,
+			'8',
+			'para re-ver',
+			'imgs/jjk 0.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			15,
+			"My Hero Academia: Heroes Rising",
+			'Película',
+			'Un grupo de jóvenes que aspiran a convertirse en superhéroes profesionales, luchan en un mundo lleno de personas con habilidades peculiaridades.',
+			'Acción - Fantasía',
+			'Kenji Nagasaki',
+			2019,
+			'8',
+			'visto',
+			'imgs/mha heroes rising.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			16,
+			"My Hero Academia: You're Next",
+			'Película',
+			'Izuku Midoriya, un estudiante del instituto U.A. que aspira a ser el mejor héroe posible, se enfrenta al villano que imita al héroe que una vez admiró.',
+			'Acción - Aventura - Ciencia ficción',
+			'Tensa Okamura',
+			2024,
+			'7',
+			'ver mas tarde',
+			'imgs/mha you are next.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			17,
+			"Mob Psycho 100",
+			'Serie',
+			'Un joven con poderes psíquicos intenta llevar una vida normal y mantener a raya sus poderes, sin embargo no puede evitar meterse en problemas constantemente.',
+			'Acción - Drama',
+			'Yuzuru Tachikawa - Katsuya Shigehara',
+			2016,
+			'9',
+			'viendo',
+			'imgs/mob 100.png'
 		)
 	''')
 	conn.commit()

@@ -4,51 +4,6 @@ import TKinterExtra as tkx
 import math
 import controlador
 
-#  
-# lista = []
-# wind = tk.Tk()
-# t1 = tk.Label(wind,text="Ingrese una herramienta: ").pack()
-# input = tk.Entry(wind)
-# input.pack()
-# t2 = tk.Label(wind,text="[]")
-# t3 = tk.Label(wind,text="",fg="red")
-# 
-# def mostrar_herramientas():
-# 	global t2
-# 	global t3
-# 
-# 	t2.pack_forget()
-# 	t2 = tk.Label(wind,text=str(lista))
-# 	t2.pack()
-# 	t3.pack_forget()
-# 	t3 = tk.Label(wind,text="")
-# 	t3.pack()
-# 
-# def ingresar():
-# 	global lista
-# 	global input
-# 	lista.append(input.get())
-# 	mostrar_herramientas()
-# 
-# def eliminar():
-# 	global lista
-# 	global input
-# 	global t3
-# 	if input.get() in lista:
-# 		lista.remove(input.get())
-# 		mostrar_herramientas()
-# 	else:
-# 		t3.pack_forget()
-# 		t3 = tk.Label(wind,text="ERROR: Ese elemento no existe")
-# 		t3.pack()
-# 
-# boton1 = tk.Button(wind,text="Ingresar",padx=20,pady=5,command=ingresar).pack()
-# boton2 = tk.Button(wind,text="Eliminar",padx=20,pady=5,command=eliminar).pack()
-# t2.pack()
-# t3.pack()
-# 
-# wind.mainloop()
-
 viendo_pagina = 0
 tipo_de_busqueda = ""
 elg_estado = ""
@@ -73,26 +28,118 @@ lab_pag = ""
 fil_buscar=""
 
 LISTA = []
-def agregar_pelicula ():
-	nombre = nombre_pelicula.get().strip()
 	
-def ventana_menu_peli ():
+def ventana_subir_obra ():
+	global font, nombre,tipo,
 	ventana2 = Toplevel()
 	ventana2.title("Añadir película o serie:")
 
-	btn_agregar = Button(ventana2, text="Agregar al catálogo", command = agregar_pelicula)
-	btn_agregar.pack()
+	split_v = Frame(ventana2)
+	split_v.pack()
+
+	#### TOPBAR ####
+	topbar = Frame(split_v, pady=10, padx=20)
+	topbar.pack()
+
+	lab_title = Label(topbar, text = "Obra:", font=font, padx=20, justify="left")
+	lab_title.grid(column=0, row=0)
+
+	btn_agregar = Button(topbar, text="Agregar", command = agregar_obra, bg="blue", fg="white", font=font)
+	btn_agregar.grid(column=2, row=0)
 	
-	nomb_peli = Label(ventana2, text = "")
-	nomb_peli.pack()
-	nombre_pelicula = Entry(ventana2, width=30)
-	nombre_pelicula.grid(row = 0, column = 1)
+	btn_agregar = Button(topbar, text="Eliminar", command = agregar_obra, bg="red", fg="white", font=font)
+	btn_agregar.grid(column=1, row=0)
+
+
+	#### DATOS ####
+	split_h = Frame(split_v)
+	split_h.pack()
+
+	btn_img  = Button(split_h, width=30, height=20)
+	btn_img.grid(column=1, row=0)
+
+	frm_info = Frame(split_h, width=30, padx=10)
+	frm_info.grid(column=0, row=0)
+
+	#TITULO
+	frm_titulo = Frame(frm_info, pady=10)
+	frm_titulo.pack()
+	titulo_obra = Label(frm_titulo, text = "Título:", font=font)
+	titulo_obra.pack()
+	nombre_obra = Entry(frm_titulo, font=font)
+	nombre_obra.pack()
+
+	#director
+	frm_direct = Frame(frm_info, pady=10)
+	frm_direct.pack()
+	direct_lab = Label(frm_direct, text = "Director:", font = font)
+	direct_lab.pack()
+	director = Entry(frm_direct, font = font)
+	director.pack()
+
+	#GENERO
+	frm_genero = Frame(frm_info, pady=10)
+	frm_genero.pack()
+	genero_obra = Label(frm_genero, text = "Género:", font = font)
+	genero_obra.pack()
+	genero = Entry(frm_genero, font = font)
+	genero.pack()
+
+
+	#### QUAD ####
+	quad = Frame(frm_info)
+	quad.pack()
+
+	#MENÚ TIPO DE OBRA
+	frm_tipo = Frame(quad, pady=10)
+	frm_tipo.grid(row=0,column=0)
+	tipo_obra = Label(frm_tipo, text = "Tipo:", font=font)
+	tipo_obra.pack()
+	opciones_tipo = ["Película", "Serie"]
+	tipo_elegido = StringVar()
+	tipo = tkx.SelectBox(frm_tipo, opciones_tipo, tipo_elegido)
+	tipo.pack()
+
+	#AÑO DE ESTRENO
+	frm_ano = Frame(quad, pady=10)
+	frm_ano.grid(row=0, column=1)
+	ano_estreno = Label(frm_ano, text = "Año:", font = font)
+	ano_estreno.pack()
+	ano = Entry(frm_ano, font = font)
+	ano.pack()
+
+	#ESTADO
+	frm_estado = Frame(quad, pady=10)
+	frm_estado.grid(row=1, column=0)
+	lab_estado = Label(frm_estado, text = "Estado:", font = font)
+	lab_estado.pack()
 	opciones_estado = ["Vista", "Sin ver", "Viendo", "Ver más tarde", "Para re-ver"]
 	estado_elegido = StringVar()
-	estado = tkx.SelectBox(ventana2, opciones_estado, estado_elegido)
+	estado = tkx.SelectBox(frm_estado, opciones_estado, estado_elegido)
 	estado.pack()
 
+	#Calificación
+	frm_califi = Frame(quad, pady=10)
+	frm_califi.grid(row=1, column=1)
+	califi_lab = Label(frm_califi, text = "Calificación:", font = font)
+	califi_lab.pack()
+	calificacion = Spinbox(frm_califi, font = font)
+	calificacion.pack()
 
+	#DESCRIPCION
+	frm_descripcion = Frame(split_v, pady=10)
+	frm_descripcion.pack()
+	descripcion_obra = Label(frm_descripcion, text = "Descripción:", font = font)
+	descripcion_obra.pack()
+	descrip = Entry(frm_descripcion, width=60, font=font)
+	descrip.pack()
+
+def agregar_obra ():
+	titulo = nombre_obra.get()
+	tipo = tipo_elegido.get()
+	
+	
+	controlador.anadir()
 
 
 
@@ -116,12 +163,12 @@ def ventana_principal():
 	fil_buscar.grid(column=1,row=0)
 
 	tipo_de_busqueda = StringVar(root)
-	sel_tipo_buscar = tkx.SelectBox(busq_cont, ["Título", "Descripcion", "Genero", "Director", "Año", "Calificación"], tipo_de_busqueda)
+	sel_tipo_buscar = tkx.SelectBox(busq_cont, ["Título", "Descripcion", "Género", "Director", "Año", "Calificación"], tipo_de_busqueda)
 	sel_tipo_buscar.grid(column=2,row=0)
 	
 	
 	
-	btn_anadir = Button(topbar, text="+ Añadir al catálogo", bg="blue", fg="white", font=font, command = ventana_menu_peli)
+	btn_anadir = Button(topbar, text="+ Añadir al catálogo", bg="blue", fg="white", font=font, command = ventana_subir_obra)
 	btn_anadir.grid(column=3,row=0)
 	
 	
