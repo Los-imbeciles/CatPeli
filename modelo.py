@@ -25,8 +25,7 @@ def init_db():
 		)
 	''')
 	cursor.execute('''
-		INSERT INTO catalogo VALUES(
-			1,
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Burns para una temporada",
 			'Película',
 			'descripcion',
@@ -40,8 +39,7 @@ def init_db():
 	''')
 
 	cursor.execute('''
-		INSERT INTO catalogo VALUES(
-			2,
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Avergers:Doomsday",
 			'Película',
 			'Héroes icónicos de tres universos diferentes se encuentran en un curso de colisión mortal y enfrentan una amenaza existencial como nunca antes han visto.',
@@ -55,8 +53,7 @@ def init_db():
 	''')
 
 	cursor.execute('''
-		INSERT INTO catalogo VALUES(
-			3,
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Titanes del pacifico",
 			'Película',
 			'Mientras la guerra entre la humanidad y las criaturas marinas monstruosas avanza, un antiguo piloto y un aprendiz se unen para conducir un arma aparentemente obsoleta en un esfuerzo desesperado por salvar al mundo del apocalipsis.',
@@ -70,8 +67,7 @@ def init_db():
 	''')
 
 	cursor.execute('''
-		INSERT INTO catalogo VALUES(
-			4,
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"101 dálmatas",
 			'Película',
 			'Cuando una camada de cachorros dálmatas es secuestrada por los secuaces de Cruella de Vil, los padres deben encontrarlos antes de que los utilice para una diabólica colección de moda.',
@@ -85,8 +81,7 @@ def init_db():
 	''')
 
 	cursor.execute('''
-		INSERT INTO catalogo VALUES(
-			5,
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"La dama y el vagabundo",
 			'Película',
 			'La historia romántica de un perro cocker spaniel de una familia de clase alta y un perro callejero.',
@@ -100,8 +95,7 @@ def init_db():
 	''')
 
 	cursor.execute('''
-		INSERT INTO catalogo VALUES(
-			6,
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Los ojos de Wakanda",
 			'Serie',
 			'Guerreros wakandeses que, a lo largo de la historia, han recorrido el mundo para recuperar peligrosos artefactos de vibranium.',
@@ -115,8 +109,7 @@ def init_db():
 	''')
 
 	cursor.execute('''
-		INSERT INTO catalogo VALUES(
-			7,
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Sherlock",
 			'Serie',
 			'El famoso detective Sherlock Holmes y su compañero el Dr. Watson resuelven crímenes en el Londres del siglo XXI.',
@@ -128,32 +121,54 @@ def init_db():
 			'imgs/sherlock.png'
 		)
 	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
+			"Como entrenar a tu dragón",
+			'Pelicula',
+			'Un desventurado joven vikingo, que aspira a cazar dragones, se convierte en el improbable amigo de un joven dragón, y aprende que puede haber más en las criaturas de lo que suponía.',
+			'Acción',
+			'Dean DeBlois - Chris Sanders',
+			2010,
+			'8',
+			'visto',
+			'imgs/como entrenar a tu dragon.png'
+		)
+	''')
+
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			9,
+			"Como entrenar a tu dragón 2",
+			'Pelicula',
+			'Cuando Hipo y Chimuelo descubren una cueva de hielo que alberga a cientos de nuevos dragones salvajes y al misterioso Jinete del Dragón, los dos amigos se encuentran en el centro de una batalla para proteger la paz.',
+			'Acción',
+			'Dean DeBlois',
+			2014,
+			'7',
+			'visto',
+			'imgs/como entrenar a tu dragon.png'
+		)
+	''')
 	conn.commit()
 	conn.close()
-	print("Base de datos inicializada correctamente")
 
 
 
-def crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado = ''):
+def crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen):
 	global DB_NAME
 	
-	try:
-		conn = sqlite3.connect(DB_NAME)
-		cursor = conn.cursor()
-	
-		cursor.execute('''
-			INSERT INTO catalogo
-			(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-		''', (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado))
-	
-		conn.commit()
-		conn.close()
-	
-		print(f"Película '{titulo}' añadida.")
-	
-	except sqlite3.Error as e:
-		print(f"Error al crear herramienta: {e}")
+	conn = sqlite3.connect(DB_NAME)
+	cursor = conn.cursor()
+
+	cursor.execute('''
+		INSERT INTO catalogo
+		(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+	''', (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen))
+
+	conn.commit()
+	conn.close()
 
 
 
@@ -161,85 +176,53 @@ def crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion
 def leer(filtro = [], valor= []):
 	global DB_NAME
 	
-	try:
-		conn = sqlite3.connect(DB_NAME)
-		cursor = conn.cursor()
-		sql = "SELECT * FROM catalogo"
-		for i in range(len(filtro)):
-			if i == 0: sql += " WHERE "
-			else: sql += " AND "
-			sql += f"{filtro[i]} LIKE '%{valor[i]}%'"
-		cursor.execute(sql)
-		leer = cursor.fetchall()
-		conn.close()
-	
-		return leer
-	
-	except sqlite3.Error as e:
-		print(f"Error al leer catalogo: {e}")
-		return []
+	conn = sqlite3.connect(DB_NAME)
+	cursor = conn.cursor()
+	sql = "SELECT * FROM catalogo"
+	for i in range(len(filtro)):
+		if i == 0: sql += " WHERE "
+		else: sql += " AND "
+		sql += f"{filtro[i]} LIKE '%{valor[i]}%'"
+	cursor.execute(sql)
+	leer = cursor.fetchall()
+	conn.close()
+
+	return leer
 
 
 
-def actualizar(l_id, **kwargs):
+def actualizar(l_id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen):
 	global DB_NAME
 	
-	try:
-		if not kwargs:
-			print("No se proporcionaron campos para actualizar")
-			return False
-		
-		conn = sqlite3.connect(DB_NAME)
-		cursor = conn.cursor()
-	
-		# Construir la consulta dinámicamente
-		set_clause = ', '.join([f"{key} = ?" for key in kwargs.keys()])
-		valores = list(kwargs.values())
-		valores.append(l_id)
-	
-		cursor.execute(f'''
-			UPDATE catalogo
-			SET {set_clause}
-			WHERE id = ?
-		''', valores)
-	
-		conn.commit()
-		filas_afectadas = cursor.rowcount
-		conn.close()
-	
-		if filas_afectadas > 0:
-			print("Obra actualizada correctamente.")
-			return True
-		else:
-			print("No se encontró ninguna obra")
-			return False
-		
-	except sqlite3.Error as e:
-		print(f"Error al actualizar herramienta: {e}")
-		return False
+	conn = sqlite3.connect(DB_NAME)
+	cursor = conn.cursor()
+
+	cursor.execute('''
+		UPDATE catalogo SET
+		titulo = ?,
+		tipo = ?,
+		descripcion = ?,
+		genero = ?,
+		director = ?,
+		ano_estreno = ?,
+		calificacion = ?,
+		estado ?,
+		imagen ?
+		WHERE id = ?
+	''', (l_id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen))
+
+	conn.commit()
+	conn.close()
 
 
 
 def eliminar(l_id):
 	global DB_NAME
+	
+	conn = sqlite3.connect(DB_NAME)
+	cursor = conn.cursor()
 
-	try:
-		conn = sqlite3.connect(DB_NAME)
-		cursor = conn.cursor()
-	
-		cursor.execute('DELETE FROM catalogo WHERE id = ?', (l_id,))
-	
-		conn.commit()
-		filas_afectadas = cursor.rowcount
-		conn.close()
-	
-		if filas_afectadas > 0:
-			print("Obra eliminada correctamente.")
-			return True
-		else:
-			print("No se encontró la obra")
-			return False
-		
-	except sqlite3.Error as e:
-		print(f"Error al eliminar herramienta: {e}")
-		return False
+	cursor.execute('DELETE FROM catalogo WHERE id = ?', (l_id,))
+
+	conn.commit()
+	conn.close()

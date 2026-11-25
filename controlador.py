@@ -1,4 +1,5 @@
 import modelo
+import sqlite3
 
 def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
 	filtro = []
@@ -28,7 +29,7 @@ def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
 	columnas = {
 		"Título": "titulo",
 		"Descripcion": "descripcion",
-		"Genero": "genero",
+		"Género": "genero",
 		"Director": "director",
 		"Año": "ano_estreno",
 		"Calificación": "calificacion"
@@ -37,26 +38,67 @@ def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
 		filtro.append(columnas[busq_tipo])
 		valor.append(busqueda)
 
-	obras = modelo.leer(filtro=filtro,valor=valor)
-	
-	if not obras:
-		print("No hay herramientas en la base de datos")
-	
-	return obras
-
-def buscar_herramientas(self, criterio, valor):	
-	criterios_validos = ['nombre', 'categoria', 'marca', 'modelo', 'estado']
-
-	if criterio not in criterios_validos:
-		print(f"Criterio no válido. Use uno de: {', '.join(criterios_validos)}")
+	try:
+		obras = modelo.leer(filtro=filtro,valor=valor)
+		return obras
+	except sqlite3.Error as e:
+		print(f"Error al leer catalogo: {e}")
 		return []
-	
-	herramientas = self.leer_herramientas(criterio, valor)
 
-	if herramientas:
-		print(f"\nResultados de búsqueda para {criterio}='{valor}':")
-		self.mostrar_herramientas(herramientas)
-	else:
-		print(f"No se encontraron herramientas con {criterio}='{valor}'")
+
+
+
+
+def anadir(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen, id=0):
+	prev_lista = mostrar()
+	se_encontro = False
+	for i in prev_lista:
+		if i[1] == titulo:
+			return "ERROR: No se pueden añadir dos obras con el mismo título, considere añadir un detalle que la diferencie (como el año o el director) entre parentesís."
+		
+		if ((id > 0) and (i[0] == id)):
+			se_encontro = True
+
+	if (not (tipo=="Película" or tipo=="Serie")):
+		return "ERROR: Esta obra debe ser una película o una serie."
+
+	if (ano_estreno<1900):
+		return "ERROR: Esta obra es demasiado vieja para existir."
+	if (ano_estreno>2026):
+		return "ERROR: Esta obra todavia no ha salido."
 	
-	return herramientas
+	if (calificacion < 0 or calificacion > 10):
+		return "ERROR: La calificación no es válida."
+
+	if (not (estado=="sin ver" or estado=="ver mas tarde" or estado=="viendo" or estado=="visto" or estado=="para re-ver")):
+		return "ERROR: El estado no es válido."
+
+	if ((estado=="visto" or estado=="para re-ver") and (calificacion != 0)):
+		return "ERROR: No se puede seleccionar calificación."
+
+	try:
+		if (id > 0):
+			if (not se_encontro):
+				return "ERROR: No se encontró la obra a editar"
+			modelo.actualizar(id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen)
+		else:
+			modelo.crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen)
+		return ""
+	except sqlite3.Error as e:
+		return f"ERROR: {e}"
+
+
+
+
+
+def eliminar(id):
+	prev_lista = mostrar()
+	for i in prev_lista:
+		if i[0] == id:
+			try:
+				modelo.eliminar(id)
+				return ""
+			except sqlite3.Error as e:
+				return f"ERROR: {e}"
+
+	return "ERROR: No se encontró la obra."
