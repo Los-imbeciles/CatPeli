@@ -49,7 +49,7 @@ import controlador
 # 
 # wind.mainloop()
 
-viendo_pagina = 1
+viendo_pagina = 0
 tipo_de_busqueda = ""
 elg_estado = ""
 elg_tipo = ""
@@ -64,16 +64,24 @@ rows_peli = 2
 total_pelis = cols_peli * rows_peli
 ancho_peli = math.floor(ancho_libreria / cols_peli)
 alto_peli = math.floor(alto_libreria / rows_peli)
+pelis = []
+peli_lab = []
+peli_img = []
+peli_img_inst = [] #instancias de las imagenes bug d tkinter
 
 LISTA = []
-#def agregar_pelicula ():
-# 	
+def agregar_pelicula ():
+	nombre = nombre_pelicula.get().strip()
+	
 def ventana_menu_peli ():
 	ventana2 = Toplevel()
 	ventana2.title("Añadir película o serie:")
 	#btn_agregar = Button(ventana2, text="Agregar al catálogo", command = agregar)
-	
-	nombre_pelicula = Entry(ventana2, ) 
+
+	nomb_peli = Label(ventana2, text = "")
+	nomb_peli.pack()
+	nombre_pelicula = Entry(ventana2, width=30)
+	nombre_pelicula.grid(row = 0, column = 1)
 	opciones_estado = ["Vista", "Sin ver", "Viendo", "Ver más tarde", "Para re-ver"]
 	estado_elegido = StringVar()
 	estado = tkx.SelectBox(ventana2, opciones_estado, estado_elegido)
@@ -84,7 +92,7 @@ def ventana_menu_peli ():
 
 
 def ventana_principal():
-	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, peli_lab, peli_img, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli
+	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, pelis, peli_lab, peli_img, peli_img_inst, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli
 	
 	root = Tk()
 	root.title("Registro de películas y series")
@@ -113,7 +121,7 @@ def ventana_principal():
 	
 	
 	
-	pag_cont = Frame(topbar, padx=80)
+	pag_cont = Frame(topbar, padx=40)
 	pag_cont.grid(column=4, row=0)
 	
 	btn_sig = Button(pag_cont, text="<", font=font)
@@ -130,10 +138,11 @@ def ventana_principal():
 	sel_estado.grid(column=1,row=0)
 	sel_estado.bind("<<ComboboxSelected>>", lambda _ : actualizar_y_listar_peliculas())
 	
-	
+	pad = Frame(topbar, padx=40)
+	pad.grid(column=0, row=0)
 	elg_tipo = StringVar(root)
-	sel_tipo = tkx.SelectBox(topbar, ["Películas y series", "Solo películas", "Solo series"], elg_tipo)
-	sel_tipo.grid(column=0,row=0)
+	sel_tipo = tkx.SelectBox(pad, ["Películas y series", "Solo películas", "Solo series"], elg_tipo)
+	sel_tipo.pack()
 	sel_tipo.bind("<<ComboboxSelected>>", lambda _ : actualizar_y_listar_peliculas())
 	
 	
@@ -142,7 +151,6 @@ def ventana_principal():
 	
 	#### LIBRERIA ####)
 	libr = Frame(root)
-	image = PhotoImage(file = "oveja.png").subsample(2, 2)
 
 	for y in range(rows_peli):
 		libr.rowconfigure(y, weight=1)
@@ -151,17 +159,15 @@ def ventana_principal():
 		libr.columnconfigure(x, weight=1)
 
 	index = 0
-	pelis = []
-	peli_lab = []
-	peli_img = []
 	for y in range(rows_peli):
 		for x in range(cols_peli):
 			pelis.append(Frame(libr, width=ancho_peli, height=alto_peli))
 			peli_lab.append(Label(pelis[index], text=f"Peli{index}"))
 			peli_lab[index].config(font=font)
-			peli_img.append(Button(pelis[index], image=image, width=ancho_peli, height=alto_peli-10))
-			peli_img[index].pack()
-			peli_lab[index].pack()
+			peli_img_inst.append(PhotoImage(file="oveja.png").subsample(2, 2))
+			peli_img.append(Button(pelis[index], image=peli_img_inst[index], width=ancho_peli, height=alto_peli-10))
+			peli_img[index].grid(row=0)
+			peli_lab[index].grid(row=1)
 			pelis[index].grid(column=x, row=y)
 			index += 1
 	
@@ -174,20 +180,22 @@ def ventana_principal():
 
 
 def listar_peliculas():
-	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, peli_lab, peli_img, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli, LISTA
+	global tipo_de_busqueda, elg_estado, elg_tipo, font, root, pelis, peli_lab, peli_img, peli_img_inst, viendo_pagina, alto_libreria, ancho_libreria, cols_peli, rows_peli, total_pelis, ancho_peli, alto_peli, LISTA
 	
 	for i in range(total_pelis):
 		# ignoren los errores, creo que igual deberia funcionar
-		leyendo = i + total_pelis * viendo_pagina
+		leyendo = i + (total_pelis * viendo_pagina)
 		
 		if leyendo < len(LISTA):
 			item = LISTA[leyendo]
-			timg = PhotoImage(file = item["imagen"]).subsample(2, 2)
-			peli_img[i].config(image=timg)
-			peli_lab[i].config(text=item["titulo"])
+			peli_img_inst[i]=PhotoImage(file=item[9]).subsample(2, 2)
+			peli_img[i].config(image=peli_img_inst[i])
+			peli_lab[i].config(text=item[1])
+			peli_img[i].grid(row=0)
 		else:
-			peli_img[i].config(image=PhotoImage(file="punto.png"))
+			peli_img_inst[i]=""
 			peli_lab[i].config(text="")
+			peli_img[i].grid_forget()
 
 
 

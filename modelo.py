@@ -21,7 +21,21 @@ def init_db():
 			ano_estreno INT CHECK(ano_estreno >= 1900 AND ano_estreno <= {datetime.now().year}),
 			calificacion INT CHECK(calificacion >= 0 AND calificacion <= 10),
 			estado TEXT CHECK(estado IN ('sin ver', 'ver mas tarde', 'viendo', 'visto', 'para re-ver')),
-			imagen
+			imagen TEXT
+		)
+	''')
+	cursor.execute('''
+		INSERT INTO catalogo VALUES(
+			1,
+			"Burns para una temporada",
+			'Película',
+			'descripcion',
+			'Imitacion barata',
+			'Steven Spilbergo',
+			'1999',
+			'0',
+			'visto',
+			'oveja.png'
 		)
 	''')
 
