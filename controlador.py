@@ -107,8 +107,8 @@ def eliminar(id):
 
 def ver(id):
 	try:
-		obras = modelo.ver1(id)
-		return obras
+		obra = modelo.ver1(id)[0]
+		return obra
 	except sqlite3.Error as e:
 		print(f"Error al leer la película o serie: {e}")
 		return []

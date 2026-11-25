@@ -314,12 +314,10 @@ def ver1 (id):
 
 	conn = sqlite3.connect(DB_NAME)
 	cursor = conn.cursor()
-	
-	sql = "SELECT * FROM catalogo WHERE id = ? LIMIT 1"
-	
-	cursor.execute(sql,(id))
-	ver = cursor.fetchone()
+	cursor.execute(f"SELECT * FROM catalogo WHERE id = {id} LIMIT 1")
+	ver = cursor.fetchall()
 	conn.close()
+	
 	return ver
 
 def actualizar(l_id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen):

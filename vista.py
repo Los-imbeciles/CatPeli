@@ -35,42 +35,50 @@ LISTA = []
 #### VISTA ANADIR ####
 ######################
 id_revisando = -99
+cargado = False
 
-def abrir_explorador_imagen():
+def abrir_explorador_imagen(ventana_menu):
 	global ruta_imagen_seleccionada
+	
 	ruta = filedialog.askopenfilename(
-		title= "Seleccionar imagen de portada",
-		filetypes= [("Imágenes", "*.png*")]
+		parent = ventana_menu,
+		title = "Seleccionar imagen de portada",
+		filetypes = [("Imágenes", "*.png")]
 	)
+	
 	if ruta:
 		ruta_imagen_seleccionada = ruta
 		print (f"Imagen sleeccionada: {ruta}")
 	
 def cerrar_ventana():
-	global id_revisando
+	global id_revisando, cargado
 	id_revisando = -99
+	cargado = False
 
 def ventana_nueva(id = -1):
-	global id_revisando
+	global id_revisando, cargado
 	ventana_subir_obra()
 	id_revisando = id
 	if (id > -1):
-		id_revisando = id + (total_pelis * viendo_pagina)
+		id_revisando = LISTA[id + (total_pelis * viendo_pagina)][0]
 		cargar_datos()
+	cargado = True
 
 
 def ventana_subir_obra ():
 	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
 
-	if(id_revisando >= 0): return
+	if(cargado): return
 	
 	ventana2 = Toplevel()
 	ventana2.title("Añadir película o serie")
 	ventana2.geometry("+500+100")
 	ventana2.bind('<Destroy>', lambda _ : cerrar_ventana())
 
+	ventana2.lift()
+
+	ventana2.focus_force()
 	ventana2.transient(root)
-	ventana2.grab_set()
 	
 	split_v = Frame(ventana2)
 	split_v.pack()
@@ -78,10 +86,7 @@ def ventana_subir_obra ():
 	#### TOPBAR ####
 	topbar = Frame(split_v, pady=10, padx=20)
 	topbar.pack()
-
-	lab_title = Label(topbar, text = "Obra:", font=font, padx=20, justify="left")
-	lab_title.grid(column=0, row=0)
-
+	
 	btn_agregar = Button(topbar, text="Agregar", command = agregar_obra, bg="blue", fg="white", font=font)
 	btn_agregar.grid(column=2, row=0)
 	
@@ -93,7 +98,7 @@ def ventana_subir_obra ():
 	split_h = Frame(split_v)
 	split_h.pack()
 
-	btn_img  = Button(split_h, width=30, height=20, text="Click para cargar imagen", command=abrir_explorador_imagen)
+	btn_img  = Button(split_h, width=30, height=20, text="Click para cargar imagen", command = lambda: abrir_explorador_imagen(ventana2))
 	btn_img.grid(column=1, row=0)
 
 	frm_info = Frame(split_h, width=30, padx=10)
@@ -134,7 +139,7 @@ def ventana_subir_obra ():
 	tipo_obra = Label(frm_tipo, text = "Tipo:", font=font)
 	tipo_obra.pack()
 	opciones_tipo = ["Película", "Serie"]
-	tipo_elegido = StringVar()
+	tipo_elegido = StringVar(name="tipo")
 	tipo = tkx.SelectBox(frm_tipo, opciones_tipo, tipo_elegido)
 	tipo.pack()
 
@@ -151,8 +156,8 @@ def ventana_subir_obra ():
 	frm_estado.grid(row=1, column=0)
 	lab_estado = Label(frm_estado, text = "Estado:", font = font)
 	lab_estado.pack()
-	opciones_estado = ["Vista", "Sin ver", "Viendo", "Ver más tarde", "Para re-ver"]
-	estado_elegido = StringVar()
+	opciones_estado = ["Visto", "Sin ver", "Viendo", "Ver más tarde", "Para re-ver"]
+	estado_elegido = StringVar(name = "estado")
 	estado = tkx.SelectBox(frm_estado, opciones_estado, estado_elegido)
 	estado.pack()
 
@@ -161,7 +166,7 @@ def ventana_subir_obra ():
 	frm_califi.grid(row=1, column=1)
 	califi_lab = Label(frm_califi, text = "Calificación:", font = font)
 	califi_lab.pack()
-	calificacion = Spinbox(frm_califi, font = font)
+	calificacion = Entry(frm_califi, font = font)
 	calificacion.pack()
 
 	#DESCRIPCION
@@ -169,7 +174,7 @@ def ventana_subir_obra ():
 	frm_descripcion.pack()
 	descripcion_obra = Label(frm_descripcion, text = "Descripción:", font = font)
 	descripcion_obra.pack()
-	descrip = st.ScrolledText(frm_descripcion, width=60, font=font, height=10)
+	descrip = st.ScrolledText(frm_descripcion, width=60, font=font, height=10, wrap=WORD)
 	descrip.pack()
 
 
@@ -177,18 +182,39 @@ def ventana_subir_obra ():
 def cargar_datos():
 	global id_revisando, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
 
-	nombre_obra.insert(0, "Hello Geeks")
-	#director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
+	if(cargado): return
+
+	datos = controlador.ver(id_revisando)
+	print(id_revisando)
+	print(datos)
+
+	
+	estados = {
+		"Todos": "",
+		"sin ver": "Sin ver",
+		"ver mas tarde": "Ver más tarde",
+		"viendo": "Viendo",
+		"visto": "Visto",
+		"para re-ver": "Para re-ver"
+	}
+	
+	nombre_obra.insert(0, datos[1])
+	root.setvar("tipo", value=datos[2])
+	descrip.insert(INSERT, datos[3])
+	genero.insert(0, datos[4])
+	director.insert(0, datos[5])
+	ano.insert(0, datos[6])
+	calificacion.insert(0, datos[7])
+	root.setvar("estado", value=estados[datos[8]])
 
 
 
 def agregar_obra ():
-    global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, ruta_imagen_seleccionada
-    
-  
-    img_final = ruta_imagen_seleccionada if ruta_imagen_seleccionada != "" else "oveja.png"
+	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, ruta_imagen_seleccionada
+	
+	img_final = ruta_imagen_seleccionada if ruta_imagen_seleccionada != "" else "oveja.png"
 
-    controlador.anadir(nombre_obra.get(), tipo_elegido.get(), descrip.get('1.0', END), genero.get(), director.get(), ano.get(), calificacion.get(), estado_elegido.get(), img_final, id_revisando)
+	controlador.anadir(nombre_obra.get(), tipo_elegido.get(), descrip.get('1.0', END), genero.get(), director.get(), ano.get(), calificacion.get(), estado_elegido.get(), img_final, id_revisando)
 
 
 
