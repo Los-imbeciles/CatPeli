@@ -37,7 +37,6 @@ def init_db():
 			'imgs/como entrenar a tu dragon 2.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Avergers:Doomsday",
@@ -51,7 +50,6 @@ def init_db():
 			'imgs/doomsday.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Titanes del pacifico",
@@ -65,7 +63,6 @@ def init_db():
 			'imgs/titanes del pacifico.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"101 dálmatas",
@@ -79,7 +76,6 @@ def init_db():
 			'imgs/101 dálmatas.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"La dama y el vagabundo",
@@ -93,7 +89,6 @@ def init_db():
 			'imgs/la dama y el vagabundo.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Los ojos de Wakanda",
@@ -107,7 +102,6 @@ def init_db():
 			'imgs/eyes of wakanda.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Sherlock",
@@ -121,7 +115,6 @@ def init_db():
 			'imgs/sherlock.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen) VALUES(
 			"Cómo entrenar a tu dragón",
@@ -135,7 +128,6 @@ def init_db():
 			'imgs/como entrenar a tu dragon.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			9,
@@ -150,7 +142,6 @@ def init_db():
 			'imgs/como entrenar a tu dragon 3.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			10,
@@ -165,7 +156,6 @@ def init_db():
 			'imgs/endgame.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			11,
@@ -180,7 +170,6 @@ def init_db():
 			'imgs/miles morales.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			12,
@@ -195,7 +184,6 @@ def init_db():
 			'imgs/spiderman lejos de casa.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			13,
@@ -210,7 +198,6 @@ def init_db():
 			'imgs/las quintillizas.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			14,
@@ -225,7 +212,6 @@ def init_db():
 			'imgs/jjk 0.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			15,
@@ -240,7 +226,6 @@ def init_db():
 			'imgs/mha heroes rising.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			16,
@@ -255,7 +240,6 @@ def init_db():
 			'imgs/mha you are next.png'
 		)
 	''')
-
 	cursor.execute('''
 		INSERT INTO catalogo VALUES(
 			17,
@@ -327,18 +311,18 @@ def actualizar(l_id, titulo, tipo, descripcion, genero, director, ano_estreno, c
 	cursor = conn.cursor()
 
 	cursor.execute('''
-		UPDATE catalogo SET
-		titulo = ?,
+		UPDATE catalogo
+		SET titulo = ?,
 		tipo = ?,
 		descripcion = ?,
 		genero = ?,
 		director = ?,
 		ano_estreno = ?,
 		calificacion = ?,
-		estado ?,
-		imagen ?
+		estado = ?,
+		imagen = ?
 		WHERE id = ?
-	''', (l_id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen))
+	''', (titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen, l_id))
 
 	conn.commit()
 	conn.close()

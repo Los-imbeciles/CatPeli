@@ -1,7 +1,9 @@
+from email import message
 from multiprocessing.process import parent_process
 from tkinter import *
 import tkinter.font as tkFont
 from tkinter import scrolledtext as st
+from turtle import title
 import TKinterExtra as tkx
 import math
 import controlador
@@ -34,7 +36,6 @@ fil_buscar=""
 ruta_imagen_seleccionada = ""
 imagen_editando = ""
 btn_img = ""
-valor_imagen = ""
 LISTA = []
 
 ######################
@@ -44,7 +45,7 @@ id_revisando = -99
 cargado = False
 
 def abrir_explorador_imagen(ventana_menu):
-	global ruta_imagen_seleccionada
+	global ruta_imagen_seleccionada, imagen_editando, btn_img
 	
 	ruta = filedialog.askopenfilename(
 		parent = ventana_menu,
@@ -53,9 +54,11 @@ def abrir_explorador_imagen(ventana_menu):
 	)
 	
 	if ruta:
-		ruta_imagen_seleccionada = ruta
-		shutil.copyfile(ruta, "./imgs/dst.png")
-		print (f"Imagen sleeccionada: {ruta}")
+		ruta_imagen_seleccionada = "./imgs/"+ruta.split("/")[-1]
+		shutil.copyfile(ruta, ruta_imagen_seleccionada)
+		print (f"Imagen sleeccionada: {ruta}, {ruta_imagen_seleccionada}")
+		imagen_editando = PhotoImage(file=ruta_imagen_seleccionada)
+		btn_img.config(image=imagen_editando)
 	
 def cerrar_ventana():
 	global id_revisando, cargado
@@ -64,16 +67,22 @@ def cerrar_ventana():
 
 def ventana_nueva(id = -1):
 	global id_revisando, cargado
-	ventana_subir_obra()
 	id_revisando = id
+	ventana_subir_obra()
 	if (id > -1):
 		id_revisando = LISTA[id + (total_pelis * viendo_pagina)][0]
 		cargar_datos()
 	cargado = True
 
+def eliminar_obra():
+	global ventana2, id_revisando
+	if (msg.Message(ventana2, parent=ventana2, type=msg.OKCANCEL, title="ADVERTENCIA", message="¿Deseas borrar esta obra?", detail="Esta acción no se puede deshacer.", icon=msg.WARNING).show() == msg.OK):
+		controlador.eliminar(id_revisando)
+		ventana2.destroy()
+		actualizar_y_listar_peliculas()
 
 def ventana_subir_obra ():
-	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, imagen_editando, btn_img, ventana2
+	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, imagen_editando, btn_img, ventana2, ruta_imagen_seleccionada, imagen_editando
 
 	if(cargado): return
 	
@@ -90,21 +99,25 @@ def ventana_subir_obra ():
 	split_v = Frame(ventana2)
 	split_v.pack()
 
-	#### TOPBAR ####
 	topbar = Frame(split_v, pady=10, padx=20)
 	topbar.pack()
-	
-	btn_agregar = Button(topbar, text="Agregar", command = agregar_obra, bg="blue", fg="white", font=font)
-	btn_agregar.grid(column=2, row=0)
-	
-	btn_eliminar = Button(topbar, text="Eliminar", command = agregar_obra, bg="red", fg="white", font=font)
-	btn_eliminar.grid(column=1, row=0)
-
+	if (id_revisando >= 0):
+		#### TOPBAR editar ####
+		btn_agregar = Button(topbar, text="Editar", command = agregar_obra, bg="blue", fg="white", font=font)
+		btn_agregar.grid(column=2, row=0)
+		
+		btn_eliminar = Button(topbar, text="Eliminar", command = eliminar_obra, bg="red", fg="white", font=font)
+		btn_eliminar.grid(column=1, row=0)
+	else:
+		#### TOPBAR anadir ####
+		btn_agregar = Button(topbar, text="Añadir", command = agregar_obra, bg="blue", fg="white", font=font)
+		btn_agregar.pack()
 
 	#### DATOS ####
 	split_h = Frame(split_v)
 	split_h.pack()
 
+	ruta_imagen_seleccionada = ""
 	imagen_editando = PhotoImage()
 	btn_img  = Button(split_h, width=ancho_peli, height=alto_peli, text="Click para cargar imagen", image=imagen_editando, command = lambda: abrir_explorador_imagen(ventana2), bg="black")
 	btn_img.grid(column=1, row=0)
@@ -188,7 +201,7 @@ def ventana_subir_obra ():
 
 
 def cargar_datos():
-	global id_revisando, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, imagen_editando, btn_img
+	global id_revisando, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, imagen_editando, btn_img, ruta_imagen_seleccionada
 
 	if(cargado): return
 
@@ -215,16 +228,15 @@ def cargar_datos():
 	calificacion.insert(0, datos[7])
 	root.setvar("estado", value=estados[datos[8]])
 	imagen_editando = PhotoImage(file=datos[9])
+	ruta_imagen_seleccionada = datos[9]
 	btn_img.config(image=imagen_editando)
 
 
 
 def agregar_obra ():
 	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, ruta_imagen_seleccionada, ventana2
-	
-	img_final = ruta_imagen_seleccionada if ruta_imagen_seleccionada != "" else "oveja.png"
 
-	error = controlador.anadir(nombre_obra.get(), tipo_elegido.get(), descrip.get('1.0', END), genero.get(), director.get(), ano.get(), calificacion.get(), estado_elegido.get(), img_final, id_revisando)
+	error = controlador.anadir(nombre_obra.get(), tipo_elegido.get(), descrip.get('1.0', END), genero.get(), director.get(), ano.get(), calificacion.get(), estado_elegido.get(),  ruta_imagen_seleccionada, id_revisando)
 	
 	if (error != ""):
 		msg.Message(ventana2, parent=ventana2, message=error, icon=msg.ERROR).show()

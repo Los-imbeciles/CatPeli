@@ -53,11 +53,13 @@ def anadir(titulo, tipo, descripcion, genero, director, ano_estreno, calificacio
 	prev_lista = mostrar()
 	se_encontro = False
 	for i in prev_lista:
-		if i[1] == titulo:
-			return "ERROR: No se pueden añadir dos obras con el mismo título, considere añadir un detalle que la diferencie (como el año o el director) entre parentesís."
+		if (id >= 0):
+			if (i[0] == id):
+				se_encontro = True
+		else:
+			if i[1] == titulo:
+				return "ERROR: No se pueden añadir dos obras con el mismo título, considere añadir un detalle que la diferencie (como el año o el director) entre parentesís."
 		
-		if ((id > 0) and (i[0] == id)):
-			se_encontro = True 
 
 	if titulo == "" or tipo == "" or descripcion == "" or genero == "" or director == "" or ano_estreno == "" or calificacion == "" or estado == "" or imagen == "":
 		return "ERROR: Debe añadir toda la informacion de la obra"
