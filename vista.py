@@ -58,7 +58,6 @@ def abrir_explorador_imagen(ventana_menu):
 		alto = timage.size[1]/(timage.size[0]/ancho_peli)
 		timg2 = timage.resize((math.floor(ancho_peli),math.floor(alto)), Image.NEAREST)
 		timg2.save(ruta_imagen_seleccionada, format="PNG")
-		print (f"Imagen seleccionada: {ruta}, {ruta_imagen_seleccionada}")
 		imagen_editando = PhotoImage(file=ruta_imagen_seleccionada)
 		btn_img.config(image = imagen_editando)
 	
@@ -208,8 +207,6 @@ def cargar_datos():
 	if(cargado): return
 
 	datos = controlador.ver(id_revisando)
-	print(id_revisando)
-	print(datos)
 
 	
 	estados = {

@@ -42,7 +42,7 @@ def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
 		obras = modelo.leer(filtro=filtro,valor=valor)
 		return obras
 	except sqlite3.Error as e:
-		print(f"Error al leer catalogo: {e}")
+		print(f"Error al leer obra: {e}")
 		return []
 
 
