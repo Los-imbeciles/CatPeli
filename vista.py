@@ -1,3 +1,4 @@
+from multiprocessing.process import parent_process
 from tkinter import *
 import tkinter.font as tkFont
 from tkinter import scrolledtext as st
@@ -5,6 +6,8 @@ import TKinterExtra as tkx
 import math
 import controlador
 from tkinter import filedialog
+from tkinter import messagebox as msg
+import shutil
 
 viendo_pagina = 0
 tipo_de_busqueda = ""
@@ -29,6 +32,9 @@ peli_img_inst = [] #instancias de las imagenes bug d tkinter
 lab_pag = ""
 fil_buscar=""
 ruta_imagen_seleccionada = ""
+imagen_editando = ""
+btn_img = ""
+valor_imagen = ""
 LISTA = []
 
 ######################
@@ -48,6 +54,7 @@ def abrir_explorador_imagen(ventana_menu):
 	
 	if ruta:
 		ruta_imagen_seleccionada = ruta
+		shutil.copyfile(ruta, "./imgs/dst.png")
 		print (f"Imagen sleeccionada: {ruta}")
 	
 def cerrar_ventana():
@@ -66,7 +73,7 @@ def ventana_nueva(id = -1):
 
 
 def ventana_subir_obra ():
-	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
+	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, imagen_editando, btn_img, ventana2
 
 	if(cargado): return
 	
@@ -98,7 +105,8 @@ def ventana_subir_obra ():
 	split_h = Frame(split_v)
 	split_h.pack()
 
-	btn_img  = Button(split_h, width=30, height=20, text="Click para cargar imagen", command = lambda: abrir_explorador_imagen(ventana2))
+	imagen_editando = PhotoImage()
+	btn_img  = Button(split_h, width=ancho_peli, height=alto_peli, text="Click para cargar imagen", image=imagen_editando, command = lambda: abrir_explorador_imagen(ventana2), bg="black")
 	btn_img.grid(column=1, row=0)
 
 	frm_info = Frame(split_h, width=30, padx=10)
@@ -156,7 +164,7 @@ def ventana_subir_obra ():
 	frm_estado.grid(row=1, column=0)
 	lab_estado = Label(frm_estado, text = "Estado:", font = font)
 	lab_estado.pack()
-	opciones_estado = ["Visto", "Sin ver", "Viendo", "Ver más tarde", "Para re-ver"]
+	opciones_estado = ["Sin ver", "Ver más tarde", "Viendo", "Visto", "Para re-ver"]
 	estado_elegido = StringVar(name = "estado")
 	estado = tkx.SelectBox(frm_estado, opciones_estado, estado_elegido)
 	estado.pack()
@@ -180,7 +188,7 @@ def ventana_subir_obra ():
 
 
 def cargar_datos():
-	global id_revisando, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip
+	global id_revisando, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, imagen_editando, btn_img
 
 	if(cargado): return
 
@@ -206,15 +214,23 @@ def cargar_datos():
 	ano.insert(0, datos[6])
 	calificacion.insert(0, datos[7])
 	root.setvar("estado", value=estados[datos[8]])
+	imagen_editando = PhotoImage(file=datos[9])
+	btn_img.config(image=imagen_editando)
 
 
 
 def agregar_obra ():
-	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, ruta_imagen_seleccionada
+	global id_revisando, font, nombre_obra, director, genero, tipo_elegido, ano, estado_elegido, calificacion, descrip, ruta_imagen_seleccionada, ventana2
 	
 	img_final = ruta_imagen_seleccionada if ruta_imagen_seleccionada != "" else "oveja.png"
 
-	controlador.anadir(nombre_obra.get(), tipo_elegido.get(), descrip.get('1.0', END), genero.get(), director.get(), ano.get(), calificacion.get(), estado_elegido.get(), img_final, id_revisando)
+	error = controlador.anadir(nombre_obra.get(), tipo_elegido.get(), descrip.get('1.0', END), genero.get(), director.get(), ano.get(), calificacion.get(), estado_elegido.get(), img_final, id_revisando)
+	
+	if (error != ""):
+		msg.Message(ventana2, parent=ventana2, message=error, icon=msg.ERROR).show()
+	else:
+		ventana2.destroy()
+		actualizar_y_listar_peliculas()
 
 
 
@@ -289,7 +305,7 @@ def ventana_principal():
 			pelis.append(Frame(libr, width=ancho_peli, height=alto_peli))
 			peli_lab.append(Label(pelis[index], text=f"Peli{index}"))
 			peli_lab[index].config(font=font)
-			peli_img_inst.append(PhotoImage(file="oveja.png").subsample(2, 2))
+			peli_img_inst.append(PhotoImage())
 			peli_img.append(Button(pelis[index], image=peli_img_inst[index], width=ancho_peli, height=alto_peli-10))
 			peli_img[index].grid(row=0)
 			peli_lab[index].grid(row=1)

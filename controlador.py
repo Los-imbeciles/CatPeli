@@ -1,5 +1,5 @@
 import modelo
-import sqlite3
+import sqlite3 # para que pueda comprender los tipos de errores del sql, jamas se comunica con la base de datos directamente
 
 def mostrar(tipo = None, estado = None, busqueda = None, busq_tipo = None):
 	filtro = []
@@ -57,7 +57,23 @@ def anadir(titulo, tipo, descripcion, genero, director, ano_estreno, calificacio
 			return "ERROR: No se pueden añadir dos obras con el mismo título, considere añadir un detalle que la diferencie (como el año o el director) entre parentesís."
 		
 		if ((id > 0) and (i[0] == id)):
-			se_encontro = True
+			se_encontro = True 
+
+	if titulo == "" or tipo == "" or descripcion == "" or genero == "" or director == "" or ano_estreno == "" or calificacion == "" or estado == "" or imagen == "":
+		return "ERROR: Debe añadir toda la informacion de la obra"
+
+	
+	estados = {
+		"Sin ver": "sin ver",
+		"Ver más tarde": "ver mas tarde",
+		"Viendo": "viendo",
+		"Visto": "visto",
+		"Para re-ver": "para re-ver"
+	}
+
+	#QUE LA CALIFICACION Y EL AÑO DE ESTRENO NO SEAN NI FLOTANTES, NI TAMPOCO TEXTO
+	if not(ano_estreno.isdecimal() and calificacion.isdecimal()):
+		return "ERROR: El año de estreno y la calificación deben ser enteros"
 
 	if (not (tipo=="Película" or tipo=="Serie")):
 		return "ERROR: Esta obra debe ser una película o una serie."
@@ -70,19 +86,20 @@ def anadir(titulo, tipo, descripcion, genero, director, ano_estreno, calificacio
 	if (int(calificacion) < 0 or int(calificacion) > 10):
 		return "ERROR: La calificación no es válida."
 
-	if (not (estado=="sin ver" or estado=="ver mas tarde" or estado=="viendo" or estado=="visto" or estado=="para re-ver")):
+	est = estados[estado]
+	if (not (est=="sin ver" or est=="ver mas tarde" or est=="viendo" or est=="visto" or est=="para re-ver")):
 		return "ERROR: El estado no es válido."
 
-	if ((estado=="visto" or estado=="para re-ver") and (calificacion != 0)):
-		return "ERROR: No se puede seleccionar calificación."
+	if ((not(est=="visto" or est=="para re-ver")) and (int(calificacion) != 0)):
+		return "ERROR: Debe haber visto la obra para poder dar una calificacion que no sea 0."
 
 	try:
 		if (id > 0):
 			if (not se_encontro):
 				return "ERROR: No se encontró la obra a editar"
-			modelo.actualizar(id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen)
+			modelo.actualizar(id, titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, est, imagen)
 		else:
-			modelo.crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, estado, imagen)
+			modelo.crear(titulo, tipo, descripcion, genero, director, ano_estreno, calificacion, est, imagen)
 		return ""
 	except sqlite3.Error as e:
 		return f"ERROR: {e}"
