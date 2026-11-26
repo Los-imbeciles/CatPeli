@@ -45,7 +45,7 @@ def init_db():
 			'Ciencia ficción - Acción',
 			'Anthony Russo - Joe Russo',
 			'2026',
-			8,
+			0,
 			'sin ver',
 			'imgs/doomsday.png'
 		)
@@ -84,7 +84,7 @@ def init_db():
 			'Musica - Familia - Comedia - Aventura',
 			'Clyde Geronimi - Hamilton Luske - Wilfred Jackson',
 			1955,
-			'7',
+			0,
 			'sin ver',
 			'imgs/la dama y el vagabundo.png'
 		)
@@ -97,7 +97,7 @@ def init_db():
 			'Ciencia ficción - Aventura',
 			'John Fang - Todd Harris',
 			2025,
-			'6',
+			0,
 			'sin ver',
 			'imgs/eyes of wakanda.png'
 		)
@@ -137,7 +137,7 @@ def init_db():
 			'Acción - Comedia - Aventura - Drama',
 			'Dean DeBlois',
 			2019,
-			'7',
+			0,
 			'sin ver',
 			'imgs/como entrenar a tu dragon 3.png'
 		)
@@ -151,7 +151,7 @@ def init_db():
 			'Ciencia ficción',
 			'Anthony Russo - Joe Russo',
 			2019,
-			'8',
+			0,
 			'sin ver',
 			'imgs/endgame.png'
 		)
@@ -165,7 +165,7 @@ def init_db():
 			'Ciencia ficción - Familia',
 			'Joaquim Dos Santos - Kemp Powers - Justin K. Thompson',
 			2023,
-			'8',
+			0,
 			'viendo',
 			'imgs/miles morales.png'
 		)
@@ -193,7 +193,7 @@ def init_db():
 			'Comedia - Drama',
 			'Masato Jinbô',
 			2022,
-			'7',
+			0,
 			'sin ver',
 			'imgs/las quintillizas.png'
 		)
@@ -235,7 +235,7 @@ def init_db():
 			'Acción - Aventura - Ciencia ficción',
 			'Tensa Okamura',
 			2024,
-			'7',
+			0,
 			'ver mas tarde',
 			'imgs/mha you are next.png'
 		)
@@ -249,7 +249,7 @@ def init_db():
 			'Acción - Drama',
 			'Yuzuru Tachikawa - Katsuya Shigehara',
 			2016,
-			'9',
+			0,
 			'viendo',
 			'imgs/mob 100.png'
 		)

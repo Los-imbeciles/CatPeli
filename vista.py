@@ -210,7 +210,6 @@ def cargar_datos():
 
 	
 	estados = {
-		"Todos": "",
 		"sin ver": "Sin ver",
 		"ver mas tarde": "Ver más tarde",
 		"viendo": "Viendo",
