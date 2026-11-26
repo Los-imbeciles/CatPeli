@@ -1,15 +1,14 @@
-from email import message
-from multiprocessing.process import parent_process
 from tkinter import *
 import tkinter.font as tkFont
 from tkinter import scrolledtext as st
-from turtle import title
 import TKinterExtra as tkx
 import math
 import controlador
 from tkinter import filedialog
 from tkinter import messagebox as msg
 import shutil
+from PIL import Image
+from random import random
 
 viendo_pagina = 0
 tipo_de_busqueda = ""
@@ -30,7 +29,7 @@ alto_peli = math.floor(alto_libreria / rows_peli)
 pelis = []
 peli_lab = []
 peli_img = []
-peli_img_inst = [] #instancias de las imagenes bug d tkinter
+peli_img_inst = [] #instancias de las imagenes, bug de tkinter
 lab_pag = ""
 fil_buscar=""
 ruta_imagen_seleccionada = ""
@@ -50,15 +49,18 @@ def abrir_explorador_imagen(ventana_menu):
 	ruta = filedialog.askopenfilename(
 		parent = ventana_menu,
 		title = "Seleccionar imagen de portada",
-		filetypes = [("Imágenes", "*.png")]
+		filetypes = [("PNGs", "*.png"),("JPGs", "*.jpg")]
 	)
 	
 	if ruta:
-		ruta_imagen_seleccionada = "./imgs/"+ruta.split("/")[-1]
-		shutil.copyfile(ruta, ruta_imagen_seleccionada)
-		print (f"Imagen sleeccionada: {ruta}, {ruta_imagen_seleccionada}")
+		ruta_imagen_seleccionada = "./imgs/"+ruta.split("/")[-1]+str(math.floor(random()*999999999999999))+".png"
+		timage = Image.open(ruta)
+		alto = timage.size[1]/(timage.size[0]/ancho_peli)
+		timg2 = timage.resize((math.floor(ancho_peli),math.floor(alto)), Image.NEAREST)
+		timg2.save(ruta_imagen_seleccionada, format="PNG")
+		print (f"Imagen seleccionada: {ruta}, {ruta_imagen_seleccionada}")
 		imagen_editando = PhotoImage(file=ruta_imagen_seleccionada)
-		btn_img.config(image=imagen_editando)
+		btn_img.config(image = imagen_editando)
 	
 def cerrar_ventana():
 	global id_revisando, cargado
