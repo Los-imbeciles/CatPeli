@@ -18,8 +18,8 @@ font = ""
 root:Tk
 
 #cuadricula
-alto_libreria = 800
-ancho_libreria = 1400
+alto_libreria = 720
+ancho_libreria = 1200
 cols_peli = 6
 rows_peli = 2
 total_pelis = cols_peli * rows_peli
